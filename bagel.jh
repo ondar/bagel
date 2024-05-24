@@ -1,0 +1,36 @@
+
+application {
+  config {
+    baseName bagel
+    applicationType monolith
+    packageName com.ondar.bagel
+    authenticationType jwt
+    prodDatabaseType mariadb
+    clientFramework react
+  }
+  entities *
+}
+
+entity Product {
+	name String
+    stock Integer
+    price BigDecimal
+}
+
+entity Order {
+	created Instant
+    paid Instant
+}
+
+entity OrderLine {
+	quantity Integer
+    price BigDecimal
+}
+
+relationship OneToMany {
+  Order to OrderLine
+}
+
+relationship ManyToOne {
+  OrderLine to Product
+}
