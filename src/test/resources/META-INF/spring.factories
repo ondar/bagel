@@ -1,0 +1,2 @@
+org.springframework.test.context.ContextCustomizerFactory = com.ondar.bagel.\
+    config.SqlTestContainersSpringContextCustomizerFactory
