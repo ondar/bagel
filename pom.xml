@@ -263,7 +263,7 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>mariadb</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -841,7 +841,7 @@
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
                             <testExcludes>
-                                <testExclude>com/ondar/bagel/config/PostgreSqlTestContainer.java</testExclude>
+                                <testExclude>com/ondar/bagel/config/MariadbTestContainer.java</testExclude>
                             </testExcludes>
                         </configuration>
                     </plugin>
@@ -944,10 +944,10 @@
                 <!-- default Spring profiles -->
                 <spring.profiles.active>prod${profile.api-docs}${profile.tls}${profile.e2e}${profile.no-liquibase}</spring.profiles.active>
                 <profile.test>testprod</profile.test>
-                <liquibase-plugin.hibernate-dialect>org.hibernate.dialect.PostgreSQLDialect</liquibase-plugin.hibernate-dialect>
-                <liquibase-plugin.driver>org.postgresql.Driver</liquibase-plugin.driver>
-                <liquibase-plugin.url>jdbc:postgresql://localhost:5432/bagel</liquibase-plugin.url>
-                <liquibase-plugin.username>bagel</liquibase-plugin.username>
+                <liquibase-plugin.hibernate-dialect>org.hibernate.dialect.MariaDB103Dialect</liquibase-plugin.hibernate-dialect>
+                <liquibase-plugin.driver>org.mariadb.jdbc.Driver</liquibase-plugin.driver>
+                <liquibase-plugin.url>jdbc:mariadb://localhost:3306/bagel</liquibase-plugin.url>
+                <liquibase-plugin.username>root</liquibase-plugin.username>
                 <liquibase-plugin.password/>
             </properties>
             <build>
@@ -1025,8 +1025,8 @@
             </build>
             <dependencies>
                 <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
+                    <groupId>org.mariadb.jdbc</groupId>
+                    <artifactId>mariadb-java-client</artifactId>
                 </dependency>
             </dependencies>
         </profile>

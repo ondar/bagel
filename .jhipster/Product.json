@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20240524132848"
+  },
+  "applications": ["bagel"],
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "stock",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "name": "Product",
+  "relationships": [
+    {
+      "otherEntityName": "orderLine",
+      "otherEntityRelationshipName": "product",
+      "relationshipName": "orderLine",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}
