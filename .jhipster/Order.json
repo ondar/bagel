@@ -1,0 +1,28 @@
+{
+  "annotations": {
+    "changelogDate": "20240524135306"
+  },
+  "applications": ["bagel"],
+  "entityTableName": "jhi_order",
+  "fields": [
+    {
+      "fieldName": "created",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "paid",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Order",
+  "relationships": [
+    {
+      "otherEntityName": "orderLine",
+      "otherEntityRelationshipName": "order",
+      "relationshipName": "orderLine",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}
