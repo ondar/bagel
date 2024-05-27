@@ -124,10 +124,6 @@ public class OrderLineResource {
                 if (orderLine.getQuantity() != null) {
                     existingOrderLine.setQuantity(orderLine.getQuantity());
                 }
-                if (orderLine.getPrice() != null) {
-                    existingOrderLine.setPrice(orderLine.getPrice());
-                }
-
                 return existingOrderLine;
             })
             .map(orderLineRepository::save);

@@ -6,7 +6,8 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import Order from './order';
 import OrderDetail from './order-detail';
 import OrderUpdate from './order-update';
-import OrderDeleteDialog from './order-delete-dialog';
+import OrderPayDialog from './order-pay-dialog';
+import OrderCancelDialog from './order-cancel-dialog';
 
 const OrderRoutes = () => (
   <ErrorBoundaryRoutes>
@@ -14,8 +15,8 @@ const OrderRoutes = () => (
     <Route path="new" element={<OrderUpdate />} />
     <Route path=":id">
       <Route index element={<OrderDetail />} />
-      <Route path="edit" element={<OrderUpdate />} />
-      <Route path="delete" element={<OrderDeleteDialog />} />
+      <Route path="pay" element={<OrderPayDialog />} />
+      <Route path="cancel" element={<OrderCancelDialog />} />
     </Route>
   </ErrorBoundaryRoutes>
 );

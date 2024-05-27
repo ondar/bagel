@@ -66,7 +66,7 @@ class OrderResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Order createEntity(EntityManager em) {
-        Order order = new Order().created(DEFAULT_CREATED).paid(DEFAULT_PAID);
+        Order order = new Order().paid(DEFAULT_PAID);
         return order;
     }
 
@@ -77,7 +77,7 @@ class OrderResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Order createUpdatedEntity(EntityManager em) {
-        Order order = new Order().created(UPDATED_CREATED).paid(UPDATED_PAID);
+        Order order = new Order().paid(UPDATED_PAID);
         return order;
     }
 
@@ -135,7 +135,6 @@ class OrderResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(order.getId().intValue())))
-            .andExpect(jsonPath("$.[*].created").value(hasItem(DEFAULT_CREATED.toString())))
             .andExpect(jsonPath("$.[*].paid").value(hasItem(DEFAULT_PAID.toString())));
     }
 
@@ -151,7 +150,6 @@ class OrderResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(order.getId().intValue()))
-            .andExpect(jsonPath("$.created").value(DEFAULT_CREATED.toString()))
             .andExpect(jsonPath("$.paid").value(DEFAULT_PAID.toString()));
     }
 
@@ -174,7 +172,7 @@ class OrderResourceIT {
         Order updatedOrder = orderRepository.findById(order.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedOrder are not directly saved in db
         em.detach(updatedOrder);
-        updatedOrder.created(UPDATED_CREATED).paid(UPDATED_PAID);
+        updatedOrder.paid(UPDATED_PAID);
 
         restOrderMockMvc
             .perform(
@@ -250,7 +248,7 @@ class OrderResourceIT {
         Order partialUpdatedOrder = new Order();
         partialUpdatedOrder.setId(order.getId());
 
-        partialUpdatedOrder.created(UPDATED_CREATED).paid(UPDATED_PAID);
+        partialUpdatedOrder.paid(UPDATED_PAID);
 
         restOrderMockMvc
             .perform(
@@ -278,7 +276,7 @@ class OrderResourceIT {
         Order partialUpdatedOrder = new Order();
         partialUpdatedOrder.setId(order.getId());
 
-        partialUpdatedOrder.created(UPDATED_CREATED).paid(UPDATED_PAID);
+        partialUpdatedOrder.paid(UPDATED_PAID);
 
         restOrderMockMvc
             .perform(

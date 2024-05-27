@@ -47,7 +47,6 @@ public class OrderAsserts {
     public static void assertOrderUpdatableFieldsEquals(Order expected, Order actual) {
         assertThat(expected)
             .as("Verify Order relevant properties")
-            .satisfies(e -> assertThat(e.getCreated()).as("check created").isEqualTo(actual.getCreated()))
             .satisfies(e -> assertThat(e.getPaid()).as("check paid").isEqualTo(actual.getPaid()));
     }
 

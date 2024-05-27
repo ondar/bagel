@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
 import { IOrder, defaultValue } from 'app/shared/model/order.model';
-import reducer, { createEntity, deleteEntity, getEntities, getEntity, updateEntity, partialUpdateEntity, reset } from './order.reducer';
+import reducer, { createEntity, getEntities, getEntity, reset } from './order.reducer';
 
 describe('Entities reducer tests', () => {
   function isEmpty(element): boolean {
@@ -60,17 +60,13 @@ describe('Entities reducer tests', () => {
     });
 
     it('should set state to updating', () => {
-      testMultipleTypes(
-        [createEntity.pending.type, updateEntity.pending.type, partialUpdateEntity.pending.type, deleteEntity.pending.type],
-        {},
-        state => {
-          expect(state).toMatchObject({
-            errorMessage: null,
-            updateSuccess: false,
-            updating: true,
-          });
-        },
-      );
+      testMultipleTypes([createEntity.pending.type], {}, state => {
+        expect(state).toMatchObject({
+          errorMessage: null,
+          updateSuccess: false,
+          updating: true,
+        });
+      });
     });
 
     it('should reset the state', () => {
@@ -83,14 +79,7 @@ describe('Entities reducer tests', () => {
   describe('Failures', () => {
     it('should set a message in errorMessage', () => {
       testMultipleTypes(
-        [
-          getEntities.rejected.type,
-          getEntity.rejected.type,
-          createEntity.rejected.type,
-          updateEntity.rejected.type,
-          partialUpdateEntity.rejected.type,
-          deleteEntity.rejected.type,
-        ],
+        [getEntities.rejected.type, getEntity.rejected.type, createEntity.rejected.type],
         'some message',
         state => {
           expect(state).toMatchObject({
@@ -149,18 +138,6 @@ describe('Entities reducer tests', () => {
         entity: payload.data,
       });
     });
-
-    it('should delete entity', () => {
-      const payload = 'fake payload';
-      const toTest = reducer(undefined, {
-        type: deleteEntity.fulfilled.type,
-        payload,
-      });
-      expect(toTest).toMatchObject({
-        updating: false,
-        updateSuccess: true,
-      });
-    });
   });
 
   describe('Actions', () => {
@@ -209,36 +186,6 @@ describe('Entities reducer tests', () => {
       const pendingAction = dispatch.mock.calls[0][0];
       expect(pendingAction.meta.requestStatus).toBe('pending');
       expect(createEntity.fulfilled.match(result)).toBe(true);
-    });
-
-    it('dispatches UPDATE_ORDER actions', async () => {
-      const arg = { id: 456 };
-
-      const result = await updateEntity(arg)(dispatch, getState, extra);
-
-      const pendingAction = dispatch.mock.calls[0][0];
-      expect(pendingAction.meta.requestStatus).toBe('pending');
-      expect(updateEntity.fulfilled.match(result)).toBe(true);
-    });
-
-    it('dispatches PARTIAL_UPDATE_ORDER actions', async () => {
-      const arg = { id: 123 };
-
-      const result = await partialUpdateEntity(arg)(dispatch, getState, extra);
-
-      const pendingAction = dispatch.mock.calls[0][0];
-      expect(pendingAction.meta.requestStatus).toBe('pending');
-      expect(partialUpdateEntity.fulfilled.match(result)).toBe(true);
-    });
-
-    it('dispatches DELETE_ORDER actions', async () => {
-      const arg = 42666;
-
-      const result = await deleteEntity(arg)(dispatch, getState, extra);
-
-      const pendingAction = dispatch.mock.calls[0][0];
-      expect(pendingAction.meta.requestStatus).toBe('pending');
-      expect(deleteEntity.fulfilled.match(result)).toBe(true);
     });
 
     it('dispatches RESET actions', async () => {
