@@ -4,6 +4,7 @@ import { ASC } from 'app/shared/util/pagination.constants';
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IOrder, defaultValue } from 'app/shared/model/order.model';
+import { IOrderLine } from 'app/shared/model/order-line.model';
 
 const initialState: EntityState<IOrder> = {
   loading: false,
@@ -42,31 +43,22 @@ export const createEntity = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
-export const updateEntity = createAsyncThunk(
-  'order/update_entity',
-  async (entity: IOrder, thunkAPI) => {
-    const result = await axios.put<IOrder>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
-    thunkAPI.dispatch(getEntities({}));
-    return result;
-  },
-  { serializeError: serializeAxiosError },
-);
-
-export const partialUpdateEntity = createAsyncThunk(
-  'order/partial_update_entity',
-  async (entity: IOrder, thunkAPI) => {
-    const result = await axios.patch<IOrder>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
-    thunkAPI.dispatch(getEntities({}));
-    return result;
-  },
-  { serializeError: serializeAxiosError },
-);
-
-export const deleteEntity = createAsyncThunk(
-  'order/delete_entity',
+export const payEntity = createAsyncThunk(
+  'order/pay_entity',
   async (id: string | number, thunkAPI) => {
-    const requestUrl = `${apiUrl}/${id}`;
-    const result = await axios.delete<IOrder>(requestUrl);
+    const requestUrl = `${apiUrl}/pay/${id}`;
+    const result = await axios.post<IOrder>(requestUrl);
+    thunkAPI.dispatch(getEntities({}));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const cancelEntity = createAsyncThunk(
+  'order/cancel_entity',
+  async (id: string | number, thunkAPI) => {
+    const requestUrl = `${apiUrl}/cancel/${id}`;
+    const result = await axios.post<IOrder>(requestUrl);
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -84,11 +76,6 @@ export const OrderSlice = createEntitySlice({
         state.loading = false;
         state.entity = action.payload.data;
       })
-      .addCase(deleteEntity.fulfilled, state => {
-        state.updating = false;
-        state.updateSuccess = true;
-        state.entity = {};
-      })
       .addMatcher(isFulfilled(getEntities), (state, action) => {
         const { data } = action.payload;
 
@@ -105,7 +92,7 @@ export const OrderSlice = createEntitySlice({
           }),
         };
       })
-      .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
+      .addMatcher(isFulfilled(createEntity, payEntity, cancelEntity), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
@@ -116,7 +103,7 @@ export const OrderSlice = createEntitySlice({
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isPending(createEntity, updateEntity, partialUpdateEntity, deleteEntity), state => {
+      .addMatcher(isPending(createEntity, payEntity, cancelEntity), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.updating = true;

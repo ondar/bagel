@@ -20,6 +20,9 @@
             <column name="paid" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
+            <column name="cancelled" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="jhi_order" columnName="created" columnDataType="${datetimeType}"/>

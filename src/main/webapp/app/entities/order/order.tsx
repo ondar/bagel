@@ -92,6 +92,12 @@ export const Order = () => {
                 <th className="hand" onClick={sort('paid')}>
                   Paid <FontAwesomeIcon icon={getSortIconByFieldName('paid')} />
                 </th>
+                <th className="hand" onClick={sort('cancelled')}>
+                  Cancelled <FontAwesomeIcon icon={getSortIconByFieldName('cancelled')} />
+                </th>
+                <th>Expires in</th>
+                <th>Order lines</th>
+                <th>Price</th>
                 <th />
               </tr>
             </thead>
@@ -105,21 +111,27 @@ export const Order = () => {
                   </td>
                   <td>{order.created ? <TextFormat type="date" value={order.created} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{order.paid ? <TextFormat type="date" value={order.paid} format={APP_DATE_FORMAT} /> : null}</td>
+                  <td>{order.cancelled ? <TextFormat type="date" value={order.cancelled} format={APP_DATE_FORMAT} /> : null}</td>
+                  <td>{order.expiresIn}</td>
+                  <td>{order.orderLines.length}</td>
+                  <td>{order.total}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/order/${order.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">View</span>
                       </Button>
-                      <Button tag={Link} to={`/order/${order.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
-                        <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Edit</span>
-                      </Button>
+
                       <Button
-                        onClick={() => (window.location.href = `/order/${order.id}/delete`)}
+                        onClick={() => (window.location.href = `/order/${order.id}/cancel`)}
                         color="danger"
                         size="sm"
-                        data-cy="entityDeleteButton"
+                        data-cy="entityCancelButton"
                       >
-                        <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
+                        <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Cancel</span>
+                      </Button>
+
+                      <Button onClick={() => (window.location.href = `/order/${order.id}/pay`)} size="sm" data-cy="orderPayButton">
+                        <FontAwesomeIcon icon="save" /> <span className="d-none d-md-inline">Pay</span>
                       </Button>
                     </div>
                   </td>

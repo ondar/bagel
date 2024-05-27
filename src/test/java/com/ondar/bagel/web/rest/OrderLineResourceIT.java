@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ondar.bagel.IntegrationTest;
 import com.ondar.bagel.domain.OrderLine;
+import com.ondar.bagel.domain.Product;
 import com.ondar.bagel.repository.OrderLineRepository;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -66,7 +67,7 @@ class OrderLineResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static OrderLine createEntity(EntityManager em) {
-        OrderLine orderLine = new OrderLine().quantity(DEFAULT_QUANTITY).price(DEFAULT_PRICE);
+        OrderLine orderLine = new OrderLine().quantity(DEFAULT_QUANTITY).product(new Product().price(DEFAULT_PRICE));
         return orderLine;
     }
 
@@ -77,7 +78,7 @@ class OrderLineResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static OrderLine createUpdatedEntity(EntityManager em) {
-        OrderLine orderLine = new OrderLine().quantity(UPDATED_QUANTITY).price(UPDATED_PRICE);
+        OrderLine orderLine = new OrderLine().quantity(UPDATED_QUANTITY).product(new Product().price(UPDATED_PRICE));
         return orderLine;
     }
 
@@ -174,7 +175,7 @@ class OrderLineResourceIT {
         OrderLine updatedOrderLine = orderLineRepository.findById(orderLine.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedOrderLine are not directly saved in db
         em.detach(updatedOrderLine);
-        updatedOrderLine.quantity(UPDATED_QUANTITY).price(UPDATED_PRICE);
+        updatedOrderLine.quantity(UPDATED_QUANTITY).product(new Product().price(UPDATED_PRICE));
 
         restOrderLineMockMvc
             .perform(
@@ -283,7 +284,7 @@ class OrderLineResourceIT {
         OrderLine partialUpdatedOrderLine = new OrderLine();
         partialUpdatedOrderLine.setId(orderLine.getId());
 
-        partialUpdatedOrderLine.quantity(UPDATED_QUANTITY).price(UPDATED_PRICE);
+        partialUpdatedOrderLine.quantity(UPDATED_QUANTITY).product(new Product().price(UPDATED_PRICE));
 
         restOrderLineMockMvc
             .perform(

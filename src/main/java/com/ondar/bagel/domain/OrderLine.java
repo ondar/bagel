@@ -2,17 +2,20 @@ package com.ondar.bagel.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * A OrderLine.
+ * An OrderLine.
  */
 @Entity
 @Table(name = "order_line")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class OrderLine implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -21,16 +24,20 @@ public class OrderLine implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     @Column(name = "quantity")
     private Integer quantity;
 
+    @NotNull
     @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "orderLines" }, allowSetters = true)
     private Product product;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "orderLines" }, allowSetters = true)
     private Order order;
@@ -67,21 +74,13 @@ public class OrderLine implements Serializable {
         return this.price;
     }
 
-    public OrderLine price(BigDecimal price) {
-        this.setPrice(price);
-        return this;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public Product getProduct() {
         return this.product;
     }
 
     public void setProduct(Product product) {
         this.product = product;
+        price = product.getPrice();
     }
 
     public OrderLine product(Product product) {
@@ -128,6 +127,8 @@ public class OrderLine implements Serializable {
             "id=" + getId() +
             ", quantity=" + getQuantity() +
             ", price=" + getPrice() +
+            ", product=" + getProduct().getName() +
+            ", order=" + (getOrder() == null ? null : getOrder().getId()) +
             "}";
     }
 }

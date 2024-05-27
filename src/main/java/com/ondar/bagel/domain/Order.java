@@ -2,13 +2,15 @@ package com.ondar.bagel.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A Order.
+ * An Order.
  */
 @Entity
 @Table(name = "jhi_order")
@@ -16,6 +18,7 @@ import java.util.Set;
 public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final int EXPIRY_SEC = 30 * 60; // how long till unpaid order expires and is cancelled
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -23,17 +26,55 @@ public class Order implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     @Column(name = "created")
-    private Instant created;
+    private Instant created = Instant.now();
 
     @Column(name = "paid")
     private Instant paid;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    @JsonIgnoreProperties(value = { "product", "order" }, allowSetters = true)
+    @Column(name = "cancelled")
+    private Instant cancelled;
+
+    @NotNull
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    @JsonIgnoreProperties(value = { "order" }, allowSetters = true)
     private Set<OrderLine> orderLines = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public BigDecimal getTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderLine line : orderLines) {
+            total = total.add(line.getPrice().multiply(BigDecimal.valueOf(line.getQuantity())));
+        }
+        return total;
+    }
+
+    public String getExpiresIn() {
+        if (cancelled != null) {
+            return "cancelled";
+        }
+        if (paid != null) {
+            return "paid";
+        }
+        long expiresIn = getExpiresInSec();
+        if (expiresIn <= 0) {
+            return "now";
+        }
+        if (expiresIn > 60) {
+            return (expiresIn / 60) + "m " + (expiresIn % 60) + "s";
+        }
+        return expiresIn + "s";
+    }
+
+    private long getExpiresInSec() {
+        return EXPIRY_SEC - Instant.now().getEpochSecond() + created.getEpochSecond();
+    }
+
+    public boolean isExpired() {
+        return paid == null && cancelled == null && getExpiresInSec() <= 0;
+    }
 
     public Long getId() {
         return this.id;
@@ -52,15 +93,6 @@ public class Order implements Serializable {
         return this.created;
     }
 
-    public Order created(Instant created) {
-        this.setCreated(created);
-        return this;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
     public Instant getPaid() {
         return this.paid;
     }
@@ -72,6 +104,14 @@ public class Order implements Serializable {
 
     public void setPaid(Instant paid) {
         this.paid = paid;
+    }
+
+    public Instant getCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(Instant cancelled) {
+        this.cancelled = cancelled;
     }
 
     public Set<OrderLine> getOrderLines() {
@@ -131,6 +171,9 @@ public class Order implements Serializable {
             "id=" + getId() +
             ", created='" + getCreated() + "'" +
             ", paid='" + getPaid() + "'" +
+            ", cancelled='" + getCancelled() + "'" +
+            ", expiresIn='" + getExpiresIn() + "'" +
+            ", lines=" + getOrderLines() +
             "}";
     }
 }

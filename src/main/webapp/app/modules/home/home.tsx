@@ -3,7 +3,7 @@ import './home.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert, Button } from 'reactstrap';
 
 import { useAppSelector } from 'app/config/store';
 
@@ -16,8 +16,18 @@ export const Home = () => {
         <span className="hipster rounded" />
       </Col>
       <Col md="9">
-        <h1 className="display-4">Welcome, Java Hipster!</h1>
-        <p className="lead">This is your homepage</p>
+        <h1 className="display-4">Welcome, Bagel enthusiast!</h1>
+        <p>
+          Select
+          <Button tag={Link} to={`/product/`} color="link">
+            Product
+          </Button>
+          or
+          <Button tag={Link} to={`/order/`} color="link">
+            Order
+          </Button>
+          in Entities menu in top right
+        </p>
         {account?.login ? (
           <div>
             <Alert color="success">You are logged in as user &quot;{account.login}&quot;.</Alert>

@@ -5,9 +5,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getEntity, deleteEntity } from './order.reducer';
+import { getEntity, payEntity } from './order.reducer';
 
-export const OrderDeleteDialog = () => {
+export const OrderPayDialog = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -35,28 +35,28 @@ export const OrderDeleteDialog = () => {
     }
   }, [updateSuccess]);
 
-  const confirmDelete = () => {
-    dispatch(deleteEntity(orderEntity.id));
+  const confirmPay = () => {
+    dispatch(payEntity(orderEntity.id));
   };
 
   return (
     <Modal isOpen toggle={handleClose}>
-      <ModalHeader toggle={handleClose} data-cy="orderDeleteDialogHeading">
-        Confirm delete operation
+      <ModalHeader toggle={handleClose} data-cy="orderPayDialogHeading">
+        Confirm pay operation
       </ModalHeader>
-      <ModalBody id="bagelApp.order.delete.question">Are you sure you want to delete Order {orderEntity.id}?</ModalBody>
+      <ModalBody id="bagelApp.order.pay.question">Are you sure you want to pay Order {orderEntity.id}?</ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={handleClose}>
           <FontAwesomeIcon icon="ban" />
           &nbsp; Cancel
         </Button>
-        <Button id="jhi-confirm-delete-order" data-cy="entityConfirmDeleteButton" color="danger" onClick={confirmDelete}>
-          <FontAwesomeIcon icon="trash" />
-          &nbsp; Delete
+        <Button id="jhi-confirm-pay-order" data-cy="entityConfirmPayButton" color="info" onClick={confirmPay}>
+          <FontAwesomeIcon icon="eye" />
+          &nbsp; Pay
         </Button>
       </ModalFooter>
     </Modal>
   );
 };
 
-export default OrderDeleteDialog;
+export default OrderPayDialog;
